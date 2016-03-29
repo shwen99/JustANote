@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -53,6 +54,8 @@ namespace JustANote
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            label1.Font = textBox1.Font;
+
             HideButtons(null, null);
 
             var location = Settings.Default.NoteWindow;
@@ -68,6 +71,7 @@ namespace JustANote
             }
 
             textBox1.Text = Settings.Default.Note;
+            textBox1.SelectionStart = 65535;
 
             var wallfile = Settings.Default.OrgFile;
 
@@ -146,6 +150,87 @@ namespace JustANote
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Save();
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            SuspendPaint(textBox1);
+
+            if (e.Control && e.KeyCode == Keys.D)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = false;
+                
+                var selection = new TextSelection(textBox1);
+
+                if (selection.IsFullLine())
+                {
+                    textBox1.SelectedText = "";
+                }
+                else
+                {
+                    selection.ExtendToFullLine();
+                }
+            }
+        }
+
+        [DllImport("user32")]
+        private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, IntPtr lParam);
+        private const int WM_SETREDRAW = 0xB;
+
+        private void SuspendPaint(Control ctrl)
+        {
+            SendMessage(ctrl.Handle, WM_SETREDRAW, 0, IntPtr.Zero);
+        }
+
+        //允许控件重绘.
+        private void ResumePaint(Control ctrl)
+        {
+            SendMessage(ctrl.Handle, WM_SETREDRAW, 1, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// auto change size to adapt the content of text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            var text = textBox1.Text;
+
+            if (text.EndsWith("\n"))
+            {
+                text += " ";
+            }
+
+            label1.Text = text;
+
+            var h = label1.Height - textBox1.Height;
+
+            if (h < 0)
+            {
+                h = 0;
+            }
+
+            var w = label1.Width - textBox1.Width;
+
+            if (w < 0)
+            {
+                w = 0;
+            }
+
+            if (h == 0 & w == 0)
+            {
+                return;
+            }
+
+            this.SetBounds(this.Left, this.Top, this.Width + w, this.Height + h);
+            //textBox1.Refresh();
+        }
+
+        private void textBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            ResumePaint(textBox1);
         }
     }
 }
