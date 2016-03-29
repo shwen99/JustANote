@@ -53,14 +53,13 @@
             this.btnClose.FlatAppearance.BorderSize = 0;
             this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightGoldenrodYellow;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClose.Font = new System.Drawing.Font("Wingdings 2", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.btnClose.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.btnClose.Location = new System.Drawing.Point(219, -2);
+            this.btnClose.Location = new System.Drawing.Point(222, -2);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(27, 24);
+            this.btnClose.Size = new System.Drawing.Size(24, 24);
             this.btnClose.TabIndex = 0;
             this.btnClose.TabStop = false;
-            this.btnClose.Text = "O";
+            this.btnClose.Text = "×";
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             this.btnClose.MouseEnter += new System.EventHandler(this.ShowButtons);
             this.btnClose.MouseLeave += new System.EventHandler(this.HideButtons);

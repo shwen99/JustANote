@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace JustANote
@@ -12,14 +13,17 @@ namespace JustANote
     {
         public static readonly Settings Default;
 
+        private static readonly string SettingFile = @".\settings.xml";
+
         static Settings()
         {
-            if (File.Exists(".\\settings.xml"))
+            if (File.Exists(SettingFile))
             {
-                using (var reader = File.OpenText(".\\settings.xml"))
+                using (var reader = File.OpenText(SettingFile))
                 {
-                    var serializer = new XmlSerializer(typeof(Settings));
-                    Default = (Settings)serializer.Deserialize(reader);
+                    var serializer = new XmlSerializer(typeof (Settings));
+                    Default = (Settings) serializer.Deserialize(reader);
+                    Default.Note = Default.Note.Replace("\n", "\r\n");
                 }
             }
             else
@@ -37,8 +41,8 @@ namespace JustANote
         public void Save()
         {
             var serializer = new XmlSerializer(typeof(Settings));
-
-            using (var writer = new StreamWriter(".\\settings.xml", false))
+            Note = Note.Replace("\r\n", "\n");
+            using (var writer = new StreamWriter(SettingFile, false))
             {
                 serializer.Serialize(writer, this);
             }

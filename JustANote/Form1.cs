@@ -21,6 +21,7 @@ namespace JustANote
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            textBox1.Select(0,0);
             btnClose.Hide();
             this.Close();
         }
@@ -32,7 +33,7 @@ namespace JustANote
 
         private void ShowButtons(object sender, EventArgs e)
         {
-            btnClose.Text = "O";
+            btnClose.Text = "×";
         }
 
         [DllImport("user32.dll")]
