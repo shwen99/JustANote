@@ -1,0 +1,716 @@
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+	var contextPath = "/default";	 // you should define the contextPath of web application
+	var EOSDEBUG = true;
+	var FINAL_PANEL_HEIGHT = 22;
+	
+	var IFRAME_MODIFY_HEIGHE = 35;
+	
+	var TREE_MODIFY_HEIGHT = 22;
+	
+	try{
+		document.domain = "gmcc.net";
+	}catch(e){}
+	
+</script>
+<script  type="text/javascript"  src="/default/common/javascripts/zh_CN/message.js" ></script>
+<script  type="text/javascript"  src="/default/common/skins/styles/resource.js.jsp" ></script>
+<script  type="text/javascript"  src="/default/common/fckeditor/fckeditor.js" ></script>
+<script  type="text/javascript"  src="/default/common/scripts/eos-web.js.gzip" ></script>
+<script  type="text/javascript"  src="/default/common/lib/mootools.js" ></script>
+<script  type="text/javascript"  src="/default/common/javascripts/common.js" ></script>
+<link href="/default/common/skins/styles/default/theme/style-sys.css" type="text/css" rel="stylesheet" >
+<link href="/default/common/skins/styles/default/theme/style-component.css" type="text/css" rel="stylesheet" >
+<link href="/default/common/skins/styles/default/theme/style-custom.css" type="text/css" rel="stylesheet" >
+<html>
+<!-- 
+  - Author(s): Administrator
+  - Date: 2016-09-06 10:05:47
+  - Description:
+-->
+<head>
+	<title>Title</title>
+</head>
+<body>
+ <form id="addForm">
+	<table align="center" border="0" width="100%"  height="100%" class="form_table" style="table-layout: fixed;background: #ecf6ff;">
+		<tr>
+		  <td width="25%" align="right" style="background: #ecf6ff"><font color="red">*</font>流程分类</td>
+		  <td colspan="" style="background: #ecf6ff">
+		  	<input type="checkbox" id="gzclxflag" value="" onclick="changelctype()" filter="false"> 新故障流程 <input type="checkbox" id="gzclflag" value="" onclick="changelctype()" filter="false"> 旧故障流程
+		  	 <input type="hidden" id="lctype" name="config/FLOWTYPE" filter="false">
+		  </td>
+		  <td  id="checktype_td1" width="25%" align="right" style="background: #ecf6ff;"><font color="red">*</font>核查类型</td>
+		  <td  id="checktype_td2" colspan="" style="background: #ecf6ff;">
+		  	<select id="checktype" name="config/CHECKTYPE" style="width: 80%;" onchange="checktypeChange()" filter="false">
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+             <option value="">请选择</option>
+<option value="光功率查询">光功率查询</option>
+<option value="无线">无线</option>
+<option value="GPON">GPON</option>
+<option value="认证账号检测">认证账号检测</option>
+<option value="网元状态查询">网元状态查询</option>
+<option value="动环">动环</option>
+<option value="ONU运行状态查询">ONU运行状态查询</option>
+<option value="5G无线退服">5G无线退服</option>
+<option value="新光功率查询">新光功率查询</option>
+<option value="新网元状态查询">新网元状态查询</option>
+
+</select>
+		  </td>
+		</tr>
+	
+		<tr>
+		  <td align="right" style="background: #ecf6ff">网络分类</td>
+		  <td colspan="3" style="background: #ecf6ff">
+		  	 <textarea id="netsort_text" name="config/NETWORKNAMES" readonly="true" filter="false" cols="50" rows="3"></textarea>
+             
+            	
+            	
+             <div  class="eos-ic-container" id="netsort_container" >
+<input class="eos-lookup-editor-text" id="netsort_input" type="text" name="config/NETWORKNAMES"><img id='netsort_button' class="eos-ic-button" /><input id="netsort_hidden" type="hidden" name="config/NETWORKIDS"></div>
+	<script>
+		var lookup = new LookUp("netsort");
+		lookup.lookupUrl = "com.huawei.nsm.gzcl.config.netSortConfigCheck2.flow?params/flowType=1";
+		lookup.addParam("params/text",'');
+		lookup.addParam("params/value",'');
+		lookup.dialogTitle = "请选择";
+		lookup.useIeModel = false;
+		lookup.width = "800";
+		lookup.height = "450";
+		lookup.onReturnFunc = "netSortReturnFunc";
+		lookup.lookupWidth = "0";
+lookup.readOnly = false;
+		lookup.init();
+	</script>
+
+             <input type="hidden" id="networkIDs" name="config/NETWORKIDS" filter="false">           
+		  </td>
+		</tr>
+		
+		<tr>
+		  <td align="right" style="background: #ecf6ff"><font color="red">*</font>告警标准名(多个请用英文;号分隔)</td>
+		  <td colspan="3" style="background: #ecf6ff">
+		  	 <textarea id="alarmStandardNames" name="config/ALARMSTANDARDNAMES" style="width: 500" filter="false" rows="3"></textarea>
+		  	 <input type="hidden" id="alarmType" filter="false">
+			 <input type="checkbox" id="alarmType1" name="config/ALARMTYPE" value="1" onclick="alarmTypeChange(this)" filter="false"> 主告警<input type="checkbox" id="alarmType0" name="config/ALARMTYPE" value="0" onclick="alarmTypeChange(this)" filter="false"> 子告警 <input type="checkbox" id="alarmType2" name="config/ALARMTYPE" value="2" onclick="alarmTypeChange(this)" filter="false"> 主子告警
+		  </td>
+		</tr>
+		
+		
+		<tr id="alarmobj">
+		  <td align="right" style="background: #ecf6ff">告警定位对象(多个请用英文;号分隔)</td>
+		  <td colspan="2" style="background: #ecf6ff">
+		  	 <textarea id="alarmALARMOBJ" name="config/ALARMALARMOBJ" style="width: 500" filter="false" rows="3"></textarea>
+		  	 <input type="hidden" id="alarmType" filter="false">  	  	  	   
+		  </td>
+		  <td>
+		   <input type="checkbox" name="config/ALARMOBJACCURATE" value="1" filter="false"> 精确匹配</br>
+		   <input type="checkbox" name="ALARMTYPE4" value="" disabled="true" filter="false"> 主告警<input type="checkbox" name="ALARMTYPE5" value="" disabled="true" filter="false"> 子告警 <input type="checkbox" name="ALARMTYPE6" value="" disabled="true" filter="false"> 主子告警
+		  </td>
+		</tr>
+		
+	    <tr id="gjbt">
+		  <td align="right" style="background: #ecf6ff">告警标题(多个请用英文;号分隔)</td>
+		  <td colspan="2" style="background: #ecf6ff">
+		  	 <textarea id="ALARMTITLE" name="config/ALARMTITLE" style="width: 500" filter="false" rows="3"></textarea>
+		  	 <input type="hidden" id="alarmType" filter="false">  	  		  	   
+		  </td>
+		  <td>
+		   <input type="checkbox" name="ALARMTYPE4" value="" disabled="true" filter="false"> 主告警<input type="checkbox" name="ALARMTYPE5" value="" disabled="true" filter="false"> 子告警 <input type="checkbox" name="ALARMTYPE6" value="" disabled="true" filter="false"> 主子告警
+		  </td>
+		</tr>
+		
+		<tr>
+		  <td id="jkbus_td1" align="right" style="background: #ecf6ff">是否集客</td>
+		  <td id="jkbus_td2" style="background: #ecf6ff">
+			 <select id="isJKBuiss" name="config/ISJK" style="width: 80%;" filter="false">
+               
+               
+               
+             <option value="">请选择</option>
+<option value="Y">是</option>
+<option value="N">否</option>
+
+</select>
+		  </td>
+		  <td id="netlevel_td1" align="right" style="background: #ecf6ff">网元级别</td>
+		  <td id="netlevel_td2" style="background: #ecf6ff">
+			 <select id="netcellClass" name="config/NETCELLCLASS" style="width: 80%;" filter="false">
+               
+               
+               
+               
+               
+             <option value="">请选择</option>
+<option value="普通级别">普通级别</option>
+<option value="三星级">三星级</option>
+<option value="四星级">四星级</option>
+<option value="五星级">五星级</option>
+
+</select>
+		  </td>
+		</tr>
+		
+		<tr>
+		  <td align="right" style="background: #ecf6ff"> <p id="alramtext1">告警未消除类别</p></td>
+		  <td style="background: #ecf6ff">
+		  	<p id="alramtext2"><input type="checkbox" id="alarmClearType1" name="config/ALARMUNCLEAR" value="1" onclick="alarmClearTypeChange(this)" filter="false"> 主告警<input type="checkbox" id="alarmClearType0" name="config/ALARMUNCLEAR" value="0" onclick="alarmClearTypeChange(this)" filter="false"> 子告警 <input type="checkbox" id="alarmClearType2" name="config/ALARMUNCLEAR" value="2" onclick="alarmClearTypeChange(this)" filter="false"> 主子告警</p>
+		  </td>
+		  
+		  <td id="pushalarmtype_td1" align="right" style="background: #ecf6ff"><font color="red">*</font>告警类型</td>
+		  <td id="pushalarmtype_td2" style="background: #ecf6ff">
+			 <select id="pushalarmtype" name="config/PUSHALARMTYPE" style="width: 80%;" filter="false">
+               
+               
+               
+               
+               
+               
+               
+               
+               
+             <option value="">请选择</option>
+<option value="1">退服类</option>
+<option value="2">光模块状态类</option>
+<option value="3">射频单元状态类</option>
+<option value="4">时钟源状态类</option>
+<option value="5">小区状态类</option>
+<option value="6">单板温度类</option>
+<option value="7">光模块是否在位类</option>
+<option value="8">GPS类</option>
+
+</select>
+		  </td>
+		</tr>
+		
+        <tr id='FAILUREEQUIPTYPE1'>
+          <td class="form_label" id="row1name">
+            <p id="pp"><span id="span1"><font id="gzsbColor" color="red">*</font>网络类型+故障设备类型(多个请用英文;号分隔)</span></p>
+          </td>
+          <td colspan="3">
+             <textarea id="FAILUREEQUIPTYPE" name="config/FAILUREEQUIPTYPE" style="width: 60%;display: inline;" readonly="true" filter="false" rows="3"></textarea>
+              <input type="button" class="button" value="选择" onclick="selectFAILUREEQUIPTYPE()">
+              <input type="hidden" id="FAILUREEQUIPTYPECODE" name="config/FAILUREEQUIPTYPEID" filter="false">  
+              <input type="checkbox" name="ALARMTYPE4" value="" disabled="true" filter="false"> 主告警<input type="checkbox" name="ALARMTYPE5" value="" disabled="true" filter="false"> 子告警 <input type="checkbox" name="ALARMTYPE6" value="" disabled="true" filter="false"> 主子告警
+          </td>
+
+        </tr>
+        
+     
+        
+        <tr id='TYPEKEY1'>
+          <td class="form_label">
+            类别关键字(多个请用英文;号分隔)
+          </td>
+          <td colspan="3">
+             <input type="text" id="TYPEKEY" name="config/TYPEKEY" style="width: 60%;display: inline;" readonly="true" filter="false">
+              <input type="button" class="button" value="选择" onclick="selectTYPEKEY()">
+              <input type="hidden" id="TYPEKEYCODE" name="config/TYPEKEYID" filter="false"> 
+              <input type="checkbox" name="ALARMTYPE4" value="" disabled="true" filter="false"> 主告警<input type="checkbox" name="ALARMTYPE5" value="" disabled="true" filter="false"> 子告警 <input type="checkbox" name="ALARMTYPE6" value="" disabled="true" filter="false"> 主子告警
+          </td>
+
+        </tr>
+        
+         <tr id='TARGETLEVEL1'>
+          <td class="form_label">
+            <font id="dxjb"  color="red">*</font>对象级别(多个请用英文;号分隔)
+          </td>
+          <td colspan="3">
+             <input type="text" id="TARGETLEVEL" name="config/TARGETLEVEL" style="width: 60%;display: inline;" readonly="true" filter="false">
+              <input type="button" class="button" value="选择" onclick="selectTARGETLEVEL()">
+              <input type="hidden" id="TARGETLEVELCODE" name="config/TARGETLEVELID" filter="false">  
+              <input type="checkbox" name="ALARMTYPE4" value="" disabled="true" filter="false"> 主告警<input type="checkbox" name="ALARMTYPE5" value="" disabled="true" filter="false"> 子告警 <input type="checkbox" name="ALARMTYPE6" value="" disabled="true" filter="false"> 主子告警
+          </td>
+
+        </tr>
+        
+        <tr id='NETTYPE1'>
+          <td class="form_label">
+            网络类型(精确匹配)<br/>(多个请用英文;号分隔)
+          </td>
+          <td colspan="3" style="background: #ecf6ff">
+		  	 <textarea id="NETTYPE" name="config/NETTYPE" style="width: 500" filter="false" rows="3"></textarea>
+		  </td>
+        </tr>	
+		<tr>
+
+		  <td align="right" style="background: #ecf6ff">是否启用</td>
+		  <td style="background: #ecf6ff">
+			 <select id="isAble" name="config/ISABLE" filter="false">
+               
+               
+             <option value="1" selected="selected">是</option>
+<option value="0">否</option>
+
+</select>
+		  </td>
+		  <td align="right" style="background: #ecf6ff">
+		  故障发生地市
+		  </td>
+		  <td style="background: #ecf6ff">
+		 	 <input type="text" id="gzcity" name="config/CITYNAME" style="width: 70%;display: inline;" readonly="true" filter="false">
+              <input type="button" class="button" value="选择" onclick="selectCity()">
+              <input type="hidden" id="citycode" name="config/CITYCODE" filter="false"> 
+		  </td>
+		</tr>
+		
+		<tr>
+		  <td style="background: #ecf6ff" colspan="4"> 获取消除时间延迟自动审核配置</td>
+		</tr>
+		
+		<tr>
+		  <td align="right" style="background: #ecf6ff"><font color="red">*</font>是否延迟自动审核</td>
+		  <td style="background: #ecf6ff">
+			 <select id="YQAudit" name="config/YQAUDIT" filter="false">
+               
+               
+             <option value="1">是</option>
+<option value="0" selected="selected">否</option>
+
+</select>
+		  </td>
+		  <td align="right" style="background: #ecf6ff">
+		  延迟时间（分钟）
+		  </td>
+		  <td style="background: #ecf6ff">
+		 	 <input type="text" id="YQTime" name="config/YQTIME" style="width: 70%;" filter="false">           
+		  </td>
+		</tr>
+		
+		<tr>
+		  <td style="background: #ecf6ff" colspan="4"> 未知状态报结审核核查规则</td>
+		</tr>
+		<tr>
+		  <td align="right" style="background: #ecf6ff"><font  color="red">*</font>未知状态是否报结通过</td>
+		  <td style="background: #ecf6ff" colspan="3">
+			 <select id="wezttg" name="config/WZZTTG" onclick="wezttgvalue()" filter="false">
+               
+               
+             <option value="是" selected="selected">是</option>
+<option value="否">否</option>
+
+</select>
+		  </td>		  
+		  </tr>
+		  <tr id="tgtjtype">
+		     <td align="right">
+            <font  color="red">*</font>报结通过条件
+          </td>
+            <td colspan="3">
+			<input type="checkbox" id="TGTJ0" value="" disabled="true" filter="false"> 未知状态告警全部消除
+			 <input type="checkbox" id="TGTJ1" value="" onclick="tgtjTypeChange(this)" filter="false"> 未知状态告警未全部消除且报结3次
+			  <input type="hidden" id="TGTJ" name="config/TGTJ" filter="false">
+		  </td>
+		  </tr>
+		
+		<tr class="form_bottom">
+          <td colspan="4" class="form_bottom">
+            <input type="button" value="提交" onclick="addConfig()" class="button">
+            <input type="button" value="取消" class="button" onclick="javaScript:window.close()">
+          </td>
+        </tr>
+	</table>
+	
+ </form>
+</body>
+
+<script type="text/javascript">
+function wezttgvalue() {
+  var WZZTTG=$id("wezttg").value;
+   if(WZZTTG=="否"){
+        document.getElementById("tgtjtype").style.display="none";
+         $id("TGTJ0").checked = false;
+         $id("TGTJ1").checked = false;
+   }
+   if(WZZTTG=="是"){
+       document.getElementById("tgtjtype").style.display="block";
+           $id("TGTJ0").checked = true;
+            $id("TGTJ").value="0";
+   }
+}
+
+function tgtjTypeChange(oCheck) {
+	if($id("TGTJ0").checked && $id("TGTJ1").checked){
+		$id("TGTJ").value="2";
+		return;
+	}
+	
+	if($id("TGTJ0").checked){
+		$id("TGTJ").value="0";
+		return;
+	}
+	
+	if($id("TGTJ1").checked){
+		$id("TGTJ").value="1";
+		return;
+	}
+}
+
+$id("netsort").onReturnFunc = function(rtvalue){
+	$id("networkIDs").value = rtvalue[0];
+ 	$id("netsort_text").value = rtvalue[1];
+ 	lookup.clearParam();
+	lookup.addParam("params/value", rtvalue[0]);
+	lookup.addParam("params/text",rtvalue[1]);
+	
+}
+
+
+
+function selectFAILUREEQUIPTYPE(){
+	  var FAILUREEQUIPTYPE=$id("FAILUREEQUIPTYPE").value;
+      var FAILUREEQUIPTYPECODE=$id("FAILUREEQUIPTYPECODE").value;
+      var orgInfo={
+    		CODE : FAILUREEQUIPTYPECODE,
+    		NAME : FAILUREEQUIPTYPE
+    	};
+	  
+	  var url ="/default/zyyw/gzcl/configPage/shebeileixingConfig.jsp?mappinginterface=&textvalue=";
+	  showModalCenter(url,orgInfo,setFAILUREEQUIPTYPEValue,"600","350","选择网络类型+故障设备类型");
+}
+function setFAILUREEQUIPTYPEValue(rtValue){
+  $id("FAILUREEQUIPTYPECODE").value =rtValue[0];
+  $id("FAILUREEQUIPTYPE").value =rtValue[1];
+}
+
+function selectTYPEKEY(){
+	  var TYPEKEY=encodeURI(encodeURI($id("TYPEKEY").value));
+      var TYPEKEYCODE=encodeURI(encodeURI($id("TYPEKEYCODE").value));
+	  var param ="TYPEKEY="+TYPEKEY+"&TYPEKEYCODE="+TYPEKEYCODE;
+	  var url ="/default/zyyw/gzcl/configPage/typekeyConfig.jsp?"+param;
+	  showModalCenter(url,"",setTYPEKEYValue,"600","350","选择类别关键字");
+}
+function setTYPEKEYValue(rtValue){
+  $id("TYPEKEYCODE").value =rtValue[0];
+  $id("TYPEKEY").value =rtValue[1];
+}
+
+//故障发生地市JSP引用及取得值
+function selectCity(){
+	  var gzcity=encodeURI(encodeURI($id("gzcity").value));
+      var citycode=encodeURI(encodeURI($id("citycode").value));
+	  var param ="gzcity="+gzcity+"&citycode="+citycode;
+      var url ="/default/zyyw/gzcl/configPage/AIQTcity2.jsp?"+param;
+	  showModalCenter(url,"",setDeviceValue,"600","350","选择故障发生地市");
+}
+function setDeviceValue(rtValue){
+  $id("citycode").value =rtValue[0];
+  $id("gzcity").value =rtValue[1];
+}
+
+function selectTARGETLEVEL(){
+	  var TARGETLEVEL=encodeURI(encodeURI($id("TARGETLEVEL").value));
+      var TARGETLEVELCODE=encodeURI(encodeURI($id("TARGETLEVELCODE").value));
+	  var param ="TARGETLEVEL="+TARGETLEVEL+"&TARGETLEVELCODE="+TARGETLEVELCODE;
+	  var url ="/default/zyyw/gzcl/configPage/targelevelConfig.jsp?"+param;
+	  showModalCenter(url,"",setTARGETLEVELValue,"600","350","选择对象级别");
+}
+function setTARGETLEVELValue(rtValue){
+  $id("TARGETLEVELCODE").value =rtValue[0];
+  $id("TARGETLEVEL").value =rtValue[1];
+}
+
+function initxx(){
+        document.getElementById("pushalarmtype_td1").style.display="none";
+        document.getElementById("pushalarmtype_td2").style.display="none";
+		document.getElementById("FAILUREEQUIPTYPE1").style.display="none";
+		document.getElementById("TYPEKEY1").style.display="none";
+		document.getElementById("TARGETLEVEL1").style.display="none";
+		document.getElementById("alarmobj").style.display="none";
+		document.getElementById("gjbt").style.display="none";
+		document.getElementById("tgtjtype").style.display="block";
+		 $id("TGTJ0").checked = true;
+         $id("TGTJ").value="0";
+
+}
+   initxx();  
+function checktypeChange() {
+        initxx();  
+	var checktype = document.getElementById("checktype").value;
+	if(checktype == "光功率查询" || checktype == "新光功率查询") {
+		document.getElementById("FAILUREEQUIPTYPE1").style.display="block";
+		document.getElementById("TYPEKEY1").style.display="block";
+		document.getElementById("TARGETLEVEL1").style.display="block";
+		document.getElementById("pushalarmtype_td1").style.display="none";
+        document.getElementById("pushalarmtype_td2").style.display="none";
+        document.getElementById("alarmobj").style.display="block";
+        document.getElementById("gjbt").style.display="none";
+        document.getElementById('pp').innerHTML  ='<span><font color="red">*</font>网络类型+故障设备类型(多个请用英文;号分隔)</span>';
+        
+		return;
+	}if(checktype == "网元状态查询" || checktype == "新网元状态查询") {
+        document.getElementById("TYPEKEY1").style.display="none";
+        document.getElementById("TARGETLEVEL1").style.display="none";
+		document.getElementById("FAILUREEQUIPTYPE1").style.display="block";
+	    document.getElementById("pushalarmtype_td1").style.display="none";
+        document.getElementById("pushalarmtype_td2").style.display="none";
+        document.getElementById("alarmobj").style.display="none";
+        document.getElementById("gjbt").style.display="none";
+        document.getElementById('pp').innerHTML  ='<span><font color="red">*</font>网络类型+故障设备类型(多个请用英文;号分隔)</span>';
+		document.getElementById("NETTYPE1").style.display="none";
+		return;
+	}if(checktype == "无线") {
+        document.getElementById("pushalarmtype_td1").style.display="block";
+        document.getElementById("pushalarmtype_td2").style.display="block";
+        document.getElementById("alarmobj").style.display="none";
+        document.getElementById("gjbt").style.display="none";
+        document.getElementById('pp').innerHTML  ='<span>故障设备类型</span>';
+        document.getElementById("FAILUREEQUIPTYPE1").style.display="block";
+        document.getElementById("NETTYPE1").style.display="none";
+        return;
+	}if(checktype == "动环") {
+	    document.getElementById("gjbt").style.display="block";	    
+	    document.getElementById("pushalarmtype_td1").style.display="none";
+        document.getElementById("pushalarmtype_td2").style.display="none";
+        document.getElementById('pp').innerHTML  ='<span>故障设备类型</span>';
+        document.getElementById("FAILUREEQUIPTYPE1").style.display="block";
+		document.getElementById("TYPEKEY1").style.display="none";
+		document.getElementById("dxjb").style.display="none";
+		document.getElementById("alarmobj").style.display="none";
+		document.getElementById("TARGETLEVEL1").style.display="block";	
+		document.getElementById("NETTYPE1").style.display="block";	
+	    return;
+	}if(checktype == "ONU运行状态查询") {
+	    document.getElementById("gjbt").style.display="none";	    
+	    document.getElementById("pushalarmtype_td1").style.display="none";
+        document.getElementById("pushalarmtype_td2").style.display="none";
+		document.getElementById("FAILUREEQUIPTYPE1").style.display="none";
+		document.getElementById("TYPEKEY1").style.display="none";
+		document.getElementById("TARGETLEVEL1").style.display="none";
+		document.getElementById("alarmobj").style.display="none";
+		document.getElementById("NETTYPE1").style.display="none";	
+	    return;
+	}if(checktype == "5G无线退服") {
+	    document.getElementById("gjbt").style.display="none";	    
+	    document.getElementById("pushalarmtype_td1").style.display="none";
+        document.getElementById("pushalarmtype_td2").style.display="none";
+		document.getElementById("FAILUREEQUIPTYPE1").style.display="block";
+		document.getElementById("TYPEKEY1").style.display="none";
+		document.getElementById("TARGETLEVEL1").style.display="none";
+		document.getElementById("alarmobj").style.display="none";
+	    document.getElementById('pp').innerHTML  ='<span>故障设备类型</span>';
+	    document.getElementById("NETTYPE1").style.display="none";
+	    return;
+	}else{
+		initxx();  
+	}
+		
+}     
+        
+        
+
+
+function alarmTypeChange(oCheck) {
+var ALARMTYPE4=document.getElementsByName("ALARMTYPE4");
+var ALARMTYPE5=document.getElementsByName("ALARMTYPE5");
+var ALARMTYPE6=document.getElementsByName("ALARMTYPE6");
+			 
+	if(oCheck.checked) {
+		$id("alarmType").value=1;
+		if (oCheck.id == "alarmType1"){
+			
+			$id("alarmType2").checked = false;
+			$id("alarmType0").checked = false;
+			for(var i=0;i<ALARMTYPE4.length;i++){
+				ALARMTYPE4[i].checked=true;
+				ALARMTYPE5[i].checked=false;
+				ALARMTYPE6[i].checked=false;
+			} 
+		}
+		else if(oCheck.id == "alarmType0"){
+			$id("alarmType1").checked = false;
+			$id("alarmType2").checked = false;
+			for(var i=0;i<ALARMTYPE4.length;i++){
+				ALARMTYPE4[i].checked=false;
+				ALARMTYPE5[i].checked=true;
+				ALARMTYPE6[i].checked=false;
+			} 
+		}
+		else{
+			$id("alarmType1").checked = false;
+			$id("alarmType0").checked = false;
+			for(var i=0;i<ALARMTYPE4.length;i++){
+				ALARMTYPE4[i].checked=false;
+				ALARMTYPE5[i].checked=false;
+				ALARMTYPE6[i].checked=true;
+			} 
+			
+		}
+			
+	}else{
+		$id("alarmType").value=0;
+		for(var i=0;i<ALARMTYPE4.length;i++){
+				ALARMTYPE4[i].checked=false;
+				ALARMTYPE5[i].checked=false;
+				ALARMTYPE6[i].checked=false;
+			} 
+	}
+}
+
+function alarmClearTypeChange(oCheck) {
+	if(oCheck.checked) {
+		if (oCheck.id == "alarmClearType1"){
+			$id("alarmClearType2").checked = false;
+			$id("alarmClearType0").checked = false;
+		}
+		else if(oCheck.id == "alarmClearType0"){
+			$id("alarmClearType1").checked = false;
+			$id("alarmClearType2").checked = false;
+		}
+		else{
+			$id("alarmClearType1").checked = false;
+			$id("alarmClearType0").checked = false;
+		}
+	}
+}
+
+function changelctype(){
+	if($id("gzclxflag").checked && $id("gzclflag").checked){
+		$id("lctype").value="2";
+		return;
+	}
+	
+	if($id("gzclxflag").checked){
+		$id("lctype").value="1";
+		return;
+	}
+	
+	if($id("gzclflag").checked){
+		$id("lctype").value="0";
+		return;
+	}
+	
+}
+
+
+function addConfig() {
+	if (!checkNeccesaryField()) return;
+	
+	if (confirm("确认提交?")) {
+		var formObj = document.getElementById('addForm');
+		var myAjax= new Ajax("com.huawei.nsm.gzcl.config.autoConfig.addAutoCheckCfg.biz");
+		myAjax.submitForm(formObj);
+		var rtCode = myAjax.getValue("root/data/reCode");
+		if(rtCode =="1") {
+			alert("增加配置成功.");
+   			window.close();
+		}else
+			alert("增加配置失败!");
+	}
+}
+
+function checkNeccesaryField() {
+	if(!$id("gzclxflag").checked && !$id("gzclflag").checked){
+			alert("请勾选流程分类!");
+			return false;
+	}
+	
+	var checktype = $id("checktype").value;
+	
+	if(checktype=="null"||checktype==""){
+	     alert("请选择核查类型");
+	     return false;
+ 	}
+ 	
+ 	
+ 	
+ 	var alarmStandardNames = $id("alarmStandardNames").value;
+	
+	if(alarmStandardNames=="null"||alarmStandardNames==""){
+	     alert("请填入告警标准名");
+	     return false;
+ 	}
+ 	
+ 	var alarmType1 = $id("alarmType").value;
+
+ 	if(alarmType1=="null"||alarmType1==""||alarmType1==0){
+	     alert("请勾选告警标准名旁的告警类别");
+	     return false;
+ 	}
+ 	
+ 	var checktype = document.getElementById("checktype").value;
+	if(checktype == "光功率查询" || checktype == "新光功率查询") {
+		
+	 	
+	 	
+		var FAILUREEQUIPTYPE = $id("FAILUREEQUIPTYPE").value;
+		if(FAILUREEQUIPTYPE=="null"||FAILUREEQUIPTYPE==""){
+		     alert("请填入网络类型+故障设备类型");
+		     return false;
+	 	}
+	 	
+	 	var TARGETLEVEL = $id("TARGETLEVEL").value;
+		
+		if(TARGETLEVEL=="null"||TARGETLEVEL==""){
+		     alert("请填入对象级别");
+		     return false;
+	 	}
+	 	
+	}
+ 	
+ 		 	
+ 	if(checktype == "网元状态查询" || checktype == "新网元状态查询" ) {
+	 	var FAILUREEQUIPTYPE = $id("FAILUREEQUIPTYPE").value;
+		
+		if(FAILUREEQUIPTYPE=="null"||FAILUREEQUIPTYPE==""){
+		     alert("请填入网络类型+故障设备类型");
+		     return false;
+	 	}	 	
+	
+	}
+
+		if(checktype == "无线") {
+	 	var pushalarmtype = $id("pushalarmtype").value;
+      
+		if(pushalarmtype=="null"||pushalarmtype==""||pushalarmtype==undefined){
+		     alert("请填入告警类型");
+		     return false;
+	 	}	 	
+	
+	}
+	
+		var YQAudit = $id("YQAudit").value;
+        var YQTime = $id("YQTime").value;
+ 	if(YQAudit==1){
+ 	if(YQTime=="null"||YQTime==""){
+	     alert("请填入延迟时间（分钟）");
+	     return false;
+	     }
+ 	}
+ 	 var WZZTTG=$id("wezttg").value;
+ 	 if(WZZTTG=="是"){
+ 	   if(!$id("TGTJ0").checked && !$id("TGTJ1").checked){
+ 	     alert("请勾选报结通过条件");
+ 	     return false;
+ 	   }
+ 	 }
+ 	
+ 	
+	return true;
+}
+
+
+</script>
+</html>
